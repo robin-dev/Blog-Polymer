@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link href="../bower_components/polymer/polymer.html" rel="import">
+	<link href="../bower_components/paper-checkbox/paper-checkbox.html" rel="import">
+	<link href="../bower_components/paper-item/paper-item.html" rel="import">
+	<link href="../bower_components/paper-input/paper-input.html" rel="import">
+	<link href="../bower_components/paper-material/paper-material.html" rel="import">
+	<link href="../bower_components/iron-icons/iron-icons.html" rel="import">
+	<link href="../bower_components/paper-fab/paper-fab.html" rel="import">
+	
+<!-- 	<link href="../bower_components/iron-input/iron-input.html" rel="import"> -->
+<!-- 	<link href="../bower_components/paper-button/paper-button.html" rel="import"> -->
+</head>
+
+<dom-module id="thumb-element" attributes="task user rid">
+  <style>
+    	
+	.thumbImage{
+		width : 100%;
+	}
+	.thumbTitle{
+		width : 100%;
+	}
+	.thumbItem{
+		display : inherit;
+		text-align: center;
+		padding: 25px;
+		color: #6f6f6f;
+		background-color: #fff;
+	}
+	paper-material {
+		
+		max-width: 640px;
+		width: 95%;
+		margin: 25px auto;
+		position: relative;
+	}
+	paper-item {
+		min-height: 80px;
+		border-bottom: 1px solid #dedede;
+		background-color: #fafafa;
+	}
+	
+    
+  </style>
+  <template>
+  
+    <paper-material class="thumb" paper-drawer-toggle>
+		<paper-item class="thumbItem" on-tap="selectThumb">					
+			<div class="thumbTitle">{{title}}</div>
+			<img class="thumbImage" src={{img}}></img>
+		</paper-item>
+	</paper-material>
+
+  </template>
+</dom-module>
+
+<script>
+  // element registration
+  Polymer({
+    is: "thumb-element",
+    // add properties and methods on the element's prototype
+    properties: {
+    	// declare properties for the element's public API
+		img: {
+			type: String,
+			value: ""	
+		},
+		title: {
+        	type: String,
+			value: "Hello!"
+    	},
+    	text: {
+	    	type: String,
+	    	value:""
+    	},
+    	rid: {
+	    	type: Number,
+	    	value: -1
+    	},
+    	time: {
+	    	type: String,
+	    	value: new Date().toLocaleString()
+	    },
+		completed: {
+	    	type: Boolean,
+			value: false,
+			observer:'compChanged'
+    	},
+    	editing: {
+	    	type: Boolean,
+	    	value: false	
+    	}
+    },
+    compChanged: function(e){
+	    if(e){ this.fire('complete',this); }
+    },
+    selectThumb: function(e){
+    	this.fire('selectThumb',this);
+	},
+	ready: function(e){
+	}
+  });
+</script>

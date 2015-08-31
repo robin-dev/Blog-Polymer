@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+ <meta  charset="UTF-8">
+<head>
+	<link href="../bower_components/polymer/polymer.html" rel="import">
+	<link href="../bower_components/paper-checkbox/paper-checkbox.html" rel="import">
+	<link href="../bower_components/paper-item/paper-item.html" rel="import">
+	<link href="../bower_components/paper-input/paper-input.html" rel="import">
+	<link href="../bower_components/paper-material/paper-material.html" rel="import">
+	<link href="../bower_components/iron-icons/iron-icons.html" rel="import">
+	<link href="../bower_components/paper-fab/paper-fab.html" rel="import">
+	<link href="../bower_components/iron-ajax/iron-ajax.html" rel="import">
+	<link href="../bower_components/google-map/google-map.html" rel="import">
+	<link href="../bower_components/paper-input/paper-textarea.html" rel="import">
+	
+<!-- 	<link href="../bower_components/iron-input/iron-input.html" rel="import"> -->
+<!-- 	<link href="../bower_components/paper-button/paper-button.html" rel="import"> -->
+</head>
+
+<dom-module id="todo-element" attributes="task user rid">
+  <style>
+    /* CSS rules for your element */
+    .todo {
+		padding: 10px;
+	}
+    
+    paper-checkbox {
+	    float: right;
+	    margin: 2vh 2vw;
+	}
+    
+    paper-button {
+	    background: #ccc;
+    }
+    
+    paper-fab {
+	    position: absolute;
+	    bottom: 3vh;
+		right: 3vw;
+		background: #4DD0E1;
+    }
+    
+    .done {
+	    background: green;
+    }
+    
+    .info {
+	    font-style: italic;
+	    font-size: 14px;
+	    color: #696969;
+		padding-top: 0;
+		padding-bottom: 0;
+    }
+    
+    paper-material {
+		background-color: #fff;
+		//max-width: 640px;
+		width: 90%;
+		margin: 25px auto;
+		position: relative;
+	}
+    
+    .info span {
+	    margin-left: 5px;
+    }
+    
+    paper-input {
+		margin: 0 2vw;
+	}
+	
+  google-map {
+    height: 600px;
+  }
+  
+  .editorArea{
+  	width : 100%;
+  	height : 600px;
+  }
+  </style>
+  <template>
+    
+
+
+
+<iron-ajax
+      id="ajax"
+      handle-as="json"
+      content-type="application/json"
+      method="POST"
+      body=""
+      on-response="hresponse"
+      debounce-duration="3000">
+  </iron-ajax>
+  
+  <iron-ajax
+    auto
+    id="ajaxGet"
+    url="test.html"
+    params=''
+    handle-as="text"
+    on-response="handleResponse"
+    debounce-duration="300"></iron-ajax>
+  
+  
+  
+    <paper-material class="todo" elevation="1">
+
+	<pre hidden={{editing}} id="content"></pre>
+	
+	    <paper-checkbox checked="{{completed}}"></paper-checkbox>
+	    <paper-fab hidden={{editing}}  icon="icons:create" on-tap="doEdit" class="edit" mini></paper-fab>
+	    <paper-fab hidden={{!editing}} icon="icons:done"   on-tap="doEdit" class="done" mini></paper-fab>
+	    <textarea id="editorArea" class="editorArea" hidden={{!editing}} label="Mode édition" aria-disabled="false">{{text}}</textarea>
+	    <paper-item hidden="{{editing}}" id="task">{{title}}</paper-item>
+	    <paper-input id="edit" hidden="{{!editing}}" value="{{task}}"></paper-input>
+	    <paper-item class="info"><span></span></paper-item>
+	    <paper-item class="info">{{ time }}</paper-item>
+	    <img class="thumbImage" src={{img}}></img>
+    </paper-material> <!-- data bindings in local DOM -->
+
+  </template>
+</dom-module>
+
+<script>
+var model = {
+		  appdata: {
+		    username: "World"
+		  },
+		  html: "<h1>Hello {{ username }}</h1>" // or "./path/to/hello.html"
+		};
+  // element registration
+  Polymer({
+	  
+    is: "todo-element",
+    // add properties and methods on the element's prototype
+    properties: {
+    	// declare properties for the element's public API
+		img: {
+			type: String,
+			value: ""	
+		},
+		title: {
+        	type: String,
+			value: "Hello!"
+    	},
+    	text: {
+	    	type: String,
+	    	value:""
+    	},user: {
+			type: String,
+			value: ""	
+		},
+		task: {
+        	type: String,
+			value: "Hello!"
+    	},
+    	urlarticle: {
+        	type: String,
+			value: ""
+    	},
+    	rid: {
+	    	type: Number,
+	    	value: -1,
+			observer:'idChanged'
+    	},
+    	time: {
+	    	type: String,
+	    	value: new Date().toLocaleString()
+	    },
+		completed: {
+	    	type: Boolean,
+			value: false,
+			observer:'compChanged'
+    	},
+    	editing: {
+	    	type: Boolean,
+	    	value: false	
+    	},
+    	filePath: {
+            type: String,
+            observer: 'loadFile'
+          },
+    	ajaxBody: {
+            type: String,
+            computed: 'processBody(username, password)'
+        }
+    },
+    loadFile: function(path) {
+        if (this.filePath) {
+          console.log(this.filePath);
+         while(typeof(Polymer.dom(this.$.content).firstChild) != 'undefined'){
+    		  Polymer.dom(this.$.content).removeChild(Polymer.dom(this.$.content).firstChild);
+    	  }
+          var link = this.importHref(this.filePath, 
+            function() {
+        	  var importedDocument = link.import.body;
+        	  while(typeof(Polymer.dom(this.$.content).firstChild) != 'undefined'){
+        		  Polymer.dom(this.$.content).removeChild(Polymer.dom(this.$.content).firstChild);
+        	  }
+        	  
+        	  this.currentContent = document.importNode(importedDocument, true);
+        	  Polymer.dom(this.$.content).appendChild(this.currentContent);
+             // Polymer.dom(this.$.content).appendChild(link.import.body);
+            },
+            function(){
+              console.log("error");
+            }
+          );
+        }
+      },
+     
+    setajax: function () {
+        this.$.ajax.url = "saveArticle/" + this.rid ;
+        var text = this.$.editorArea.value;
+      	this.$.ajax.body =  JSON.stringify({content: text});
+        this.$.ajax.generateRequest();
+      },
+      hresponse: function(request) {
+        this.text = request.detail.response[0].body;
+        console.log(this.$.ajax.lastResponse);
+      },
+      handleResponse: function(request) {
+          this.text = request.detail.response;
+        },
+    compChanged: function(e){
+	    if(e){ this.fire('complete',this); }
+    },
+    doEdit: function(e){
+    	
+    	
+    	
+    	this.editing=!this.editing;
+    	if (!this.editing){
+    		this.fire('edit', {rid:this.rid, task:this.task});
+    		this.setajax(); 
+    		 this.$.ajaxGet.url = "elements/" + this.urlarticle;
+    	     this.$.ajaxGet.generateRequest();
+    	     this.filePath = "elements/" + this.urlarticle;
+    	     this.loadFile();
+    	     window.location.reload(true);
+    	}else{
+    		 this.$.ajaxGet.url = "elements/" + this.urlarticle;
+    	     this.$.ajaxGet.generateRequest();
+    	     this.filePath = "elements/" + this.urlarticle;
+    	     this.loadFile();
+    	}
+	},
+	ready: function(e){
+		//this.urlChanged();
+	},
+
+	idChanged : function(e){
+		this.filePath = "article/" + this.rid;
+		this.loadFile();
+	}
+	
+  });
+</script>
