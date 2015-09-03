@@ -25,3 +25,17 @@ id  serial PRIMARY KEY,
       ON UPDATE CASCADE ON DELETE CASCADE
 );
 
+
+CREATE TABLE articlelink
+(
+  id serial NOT NULL,
+  article_id integer NOT NULL,
+  parent_id integer NOT NULL,
+  CONSTRAINT articlelink_pkey PRIMARY KEY (id),
+  CONSTRAINT fk_artid FOREIGN KEY (article_id)
+      REFERENCES article (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk_parentid FOREIGN KEY (parent_id)
+      REFERENCES article (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)

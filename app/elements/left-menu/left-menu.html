@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+ <meta  charset="UTF-8">
+<head>
+	<link href="../../bower_components/polymer/polymer.html" rel="import">
+	<link href="../../bower_components/paper-drawer-panel/paper-drawer-panel.html" rel="import" >
+	<link href="../thumb-list/thumb-list.html" rel="import">
+</head>
+
+<dom-module id="left-menu">
+  <style>
+  </style>
+  <template>
+<paper-scroll-header-panel drawer fixed>
+
+        <!-- Drawer Toolbar -->
+        <paper-toolbar id="drawerToolbar">
+          <span class="paper-font-title">Menu</span>
+        </paper-toolbar>
+		<thumb-list params={{params}}></thumb-list>
+		
+        <!-- Drawer Content -->
+        <paper-menu class="list" attr-for-selected="data-route" selected="{{route}}" on-iron-select="onMenuSelect">
+          <a data-route="home" href="/">
+            <iron-icon icon="home"></iron-icon>
+            <span>Home</span>
+          </a>
+          
+          
+
+          <a  href="/users">
+            <iron-icon icon="info"></iron-icon>
+            <span>Users</span>
+          </a>
+	     <a  href="/top/vf/vfd">
+            <iron-icon icon="info"></iron-icon>
+            <span>top1</span>
+          </a>
+ 		<a  href="/top/ggg/vlllfd">
+            <iron-icon icon="info"></iron-icon>
+            <span>top1</span>
+          </a>
+          <a  href="/top/ggg">
+            <iron-icon icon="info"></iron-icon>
+            <span>top1</span>
+          </a>
+          <a href="/contact">
+            <iron-icon icon="mail"></iron-icon>
+            <span>Contact</span>
+          </a>
+        </paper-menu>
+      </paper-scroll-header-panel>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+	  
+    is: "left-menu",
+    // add properties and methods on the element's prototype
+    properties: {
+    }
+  });
+</script>

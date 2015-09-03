@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+ <meta  charset="UTF-8">
+<head>
+	<link href="../../bower_components/polymer/polymer.html" rel="import">
+	<link href="../../bower_components/iron-ajax/iron-ajax.html" rel="import">
+	<link href="../../bower_components/google-map/google-map.html" rel="import">
+	
+</head>
+
+<dom-module id="article-content" attributes="task user rid">
+  <style>
+    /* CSS rules for your element */
+    .todo {
+		padding: 10px;
+	}
+    
+    paper-checkbox {
+	    float: right;
+	    margin: 2vh 2vw;
+	}
+    
+    paper-button {
+	    background: #ccc;
+    }
+    
+    paper-fab {
+	    position: absolute;
+	    bottom: 3vh;
+		right: 3vw;
+		background: #4DD0E1;
+    }
+    
+    .done {
+	    background: green;
+    }
+    
+    .info {
+	    font-style: italic;
+	    font-size: 14px;
+	    color: #696969;
+		padding-top: 0;
+		padding-bottom: 0;
+    }
+    
+    paper-material {
+		background-color: #fff;
+		//max-width: 640px;
+		width: 90%;
+		margin: 25px auto;
+		position: relative;
+	}
+    
+    .info span {
+	    margin-left: 5px;
+    }
+    
+    paper-input {
+		margin: 0 2vw;
+	}
+	
+  google-map {
+    height: 600px;
+  }
+  
+  .editorArea{
+  	width : 100%;
+  	height : 600px;
+  }
+  </style>
+  <template>
+    
+
+
+
+  
+  <iron-ajax
+    auto
+    id="ajaxGet"
+    url="../../../test"
+    params=''
+    handle-as="text"
+    on-response="handleResponse"
+    debounce-duration="300"></iron-ajax>
+  
+	<div  id="content"></div>
+  </template>
+</dom-module>
+
+<script>
+var model = {
+		  appdata: {
+		    username: "World"
+		  },
+		  html: "<h1>Hello {{ username }}</h1>" // or "./path/to/hello.html"
+		};
+  // element registration
+  Polymer({
+	  
+    is: "article-content",
+    // add properties and methods on the element's prototype
+    properties: {
+    	// declare properties for the element's public API
+		img: {
+			type: String,
+			value: ""	
+		},
+		title: {
+        	type: String,
+			value: "Hello!"
+    	},
+    	text: {
+	    	type: String,
+	    	value:""
+    	},user: {
+			type: String,
+			value: ""	
+		},
+		task: {
+        	type: String,
+			value: "Hello!"
+    	},
+    	urlarticle: {
+        	type: String,
+			value: ""
+    	},
+    	rid: {
+	    	type: Number,
+	    	value: -1,
+			observer:'idChanged'
+    	},
+    	time: {
+	    	type: String,
+	    	value: new Date().toLocaleString()
+	    },
+		completed: {
+	    	type: Boolean,
+			value: false,
+			observer:'compChanged'
+    	},
+    	editing: {
+	    	type: Boolean,
+	    	value: false	
+    	},
+    	filePath: {
+            type: String,
+            observer: 'loadFile'
+          },
+    	ajaxBody: {
+            type: String,
+            computed: 'processBody(username, password)'
+        }
+    },
+    loadFile: function(path) {
+        if (this.filePath) {
+         while(typeof(Polymer.dom(this.$.content).firstChild) != 'undefined'){
+    		  Polymer.dom(this.$.content).removeChild(Polymer.dom(this.$.content).firstChild);
+    	  }
+          var link = this.importHref(this.filePath, 
+            function() {
+        	  var importedDocument = link.import.body;
+        	  while(typeof(Polymer.dom(this.$.content).firstChild) != 'undefined'){
+        		  Polymer.dom(this.$.content).removeChild(Polymer.dom(this.$.content).firstChild);
+        	  }
+        	  
+        	  this.currentContent = document.importNode(importedDocument, true);
+        	  Polymer.dom(this.$.content).appendChild(this.currentContent);
+        	  this.fire('articleLoaded',this); 
+        	 // document.querySelector('google-map').resize();
+             // Polymer.dom(this.$.content).appendChild(link.import.body);
+            },
+            function(){
+              console.log("error");
+            }
+          );
+        }
+    
+      },
+     
+    setajax: function () {
+        this.$.ajax.url = "saveArticle/" + this.rid ;
+        var text = this.$.editorArea.value;
+      	this.$.ajax.body =  JSON.stringify({content: text});
+        this.$.ajax.generateRequest();
+      },
+      hresponse: function(request) {
+        this.text = request.detail.response[0].body;
+        console.log(this.$.ajax.lastResponse);
+      },
+      handleResponse: function(request) {
+          this.text = request.detail.response;
+        },
+    compChanged: function(e){
+	    if(e){ this.fire('complete',this); }
+    },
+    doEdit: function(e){
+    	
+    	
+    	
+    	this.editing=!this.editing;
+    	if (!this.editing){
+    		this.fire('edit', {rid:this.rid, task:this.task});
+    		this.setajax(); 
+    		 this.$.ajaxGet.url = "elements/" + this.urlarticle;
+    	     this.$.ajaxGet.generateRequest();
+    	     this.filePath = "elements/" + this.urlarticle;
+    	     this.loadFile();
+    	     window.location.reload(true);
+    	}else{
+    		 this.$.ajaxGet.url = "elements/" + this.urlarticle;
+    	     this.$.ajaxGet.generateRequest();
+    	     this.filePath = "elements/" + this.urlarticle;
+    	     this.loadFile();
+    	}
+	},
+	ready: function(e){
+		//this.urlChanged();
+		console.log("ready");
+	},
+
+	idChanged : function(e){
+		if(this.rid !== -1){
+			this.filePath = "../../../test/" + this.rid ;
+			this.loadFile();	
+		}
+		
+	}
+	
+  });
+</script>

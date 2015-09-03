@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link href="thumb-element.html" rel="import">
+	
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+</head>
+
+<dom-module id="thumb-list" attributes="task user rid">
+  <style>
+    	.subcategory{
+    	width : 80%;}
+	
+    
+  </style>
+  <template>
+   <iron-ajax
+      id="ajax"
+      url=""
+      handle-as="json"
+      on-response="hresponse"
+      debounce-duration="300">
+  </iron-ajax>
+  
+  <div><span>Retour vers </span><span>{{parent.title}}</span></div>
+             <paper-menu>
+             <template id="done" is="dom-repeat" items="{{elements}}" as="item">
+          <paper-submenu>
+            <paper-item class="menu-trigger"><div >{{item.title}}</div></paper-item>
+            <paper-menu class="menu-content">
+               <template class="subcategory" is="dom-repeat" items="{{item.children}}" as="children">
+				<thumb-element img="{{children.img}}" title="{{children.title}}" text="{{children.text}}" rid="{{children.id}}" parent_id="{{children.parent_id}}">
+		  	</thumb-element> 
+			
+		  </template> 
+			
+		  </template>
+            </paper-menu>
+          </paper-submenu>
+          </template>
+         
+        </paper-menu>
+   
+
+	  </template>
+
+
+
+
+  </template>
+</dom-module>
+
+<script>
+  // element registration
+  Polymer({
+    is: "thumb-list",
+    // add properties and methods on the element's prototype
+    properties: {
+    	params : {
+    		type : Object,
+    		value : {},
+    		observer:'paramChanged'
+    	},
+    	parent : {type : Object,
+			value :{
+    		img : "../../images/laos.jpg",
+			title : "Parent",
+			text : "ligne1 ligne2",
+			urlarticle : "test.html",
+			rid : 4}
+		},
+    	elements : {
+			type : Array,
+			value : [
+			         
+			    {
+				img : "../../images/laos.jpg",
+				title : "cat 1",
+				text : "ligne1 ligne2",
+				urlarticle : "test.html",
+				rid : 4,
+				open : true,
+				children : [{
+							img : "../../images/laos.jpg",
+							title : "chine",
+							text : "ligne1 ligne2",
+							urlarticle : "test.html",
+							rid : 4
+							},
+							
+							{
+								img : "../../images/laos.jpg",
+								title : "Amerique",
+								text : "ligne1 ligne2",
+								urlarticle : "test.html",
+								rid : 4
+								},
+								
+								{
+									img : "../../images/laos.jpg",
+									title : "Amerique",
+									text : "ligne1 ligne2",
+									urlarticle : "test.html",
+									rid : 4
+									}
+						    
+						
+						]
+				},
+				
+				{
+					img : "../../images/laos.jpg",
+					title : "Amerique",
+					text : "ligne1 ligne2",
+					urlarticle : "test.html",
+					rid : 7,
+					open : false,
+					children : [{
+								img : "../../images/laos.jpg",
+								title : "Asie",
+								text : "ligne1 ligne2",
+								urlarticle : "test.html",
+								rid : 4
+								},
+								
+								{
+									img : "../../images/laos.jpg",
+									title : "Amerique",
+									text : "ligne1 ligne2",
+									urlarticle : "test.html",
+									rid : 4
+									}
+							    
+							
+							]
+					}
+			    
+			
+			]
+				
+				
+				
+			
+		}
+    },
+    compChanged: function(e){
+	    if(e){ this.fire('complete',this); }
+    },
+    paramChanged: function(e){
+	    console.log("param changed");
+	    this.$.ajax.url = "menu/14";
+	    this.$.ajax.generateRequest();
+    },
+    hresponse: function(request) {
+    	var result = request.detail.response;
+    	this.elements = result;
+      },
+    handleSelectThumb: function(e){
+    	this.$.ajax.url = "menu/" +  e.target.parent_id;
+    	//this.$.ajax.url = "menu/" + 4;
+	    this.$.ajax.generateRequest();
+	    
+    	
+	}, 
+	openTab: function(e) {
+    	//e.currentTarget.linkeditem.open = !e.currentTarget.linkeditem.open;
+    	
+    	for(var i =0 ;i<this.elements.length;i++){
+    		if(this.elements[i].rid ===e.currentTarget.linkeditem.rid){
+    		}
+    	}
+    	
+	},
+	ready: function(e){
+
+		this.addEventListener('selectThumb', this.handleSelectThumb);
+		
+	}
+  });
+</script>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+	
+<link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+<link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+  <script src="../../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+
+  <link rel="import" href="../../bower_components/polymer/polymer.html">
+  <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+  <link rel="import" href="../../bower_components/iron-list/iron-list.html">
+
+  <link rel="import" href="../../bower_components/iron-ajax/iron-ajax.html">
+  <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+
+  <link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+  <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+  <link rel="import" href="../../bower_components/paper-toolbar/paper-toolbar.html">
+  <link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
+  <link rel="import" href="../../bower_components/paper-item/paper-item.html">
+  <link rel="import" href="../../bower_components/paper-badge/paper-badge.html">
+
+  <link rel="import" href="article-content.html">
+</head>
+
+ <dom-module id="article-list">
+
+    <style>
+
+ 
+      iron-list.has-scroller {
+   			 overflow: inherit;
+		}
+
+     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+:root {
+      --dark-primary-color:       #F57C00;
+    }
+
+    paper-scroll-header-panel {
+      @apply(--layout-fit);
+      @apply(--layout-vertical);
+      @apply(--paper-font-common-base);
+    }
+
+    paper-toolbar {
+      background-color: var(--dark-primary-color);
+    }
+
+    paper-toolbar.tall .title {
+      font-size: 40px;
+      margin-left: 60px;
+
+      -webkit-transform-origin: left center;
+      transform-origin: left center;
+      overflow: visible;
+    }
+
+    .middle-container {
+      height: 100%;
+      /*margin-left: 60px;*/
+    }
+
+    .bottom {
+      padding-left: 62px;
+    }
+
+    iron-list {
+      //background-color: var(--paper-grey-200, #eee);
+      padding-bottom: 16px;
+    }
+
+    .item {
+      @apply(--layout-horizontal);
+
+      margin: 16px 16px 0 16px;
+      padding: 20px;
+
+      border-radius: 8px;
+      background-color: white;
+      border: 1px solid #ddd;
+    }
+
+    .pad {
+      padding: 0 16px;
+      @apply(--layout-flex);
+      @apply(--layout-vertical);
+    }
+
+    .primary {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .secondary {
+      font-size: 14px;
+    }
+
+    .dim {
+      color: gray;
+    }
+
+    /* Small */
+    @media (max-width: 600px) {
+      paper-toolbar.tall .title {
+        font-size: 20px;
+      }
+    }
+    
+    .index {
+      width: 30px;
+    }
+    </style>
+
+    <template>
+      <iron-ajax url="data/contacts.json" last-response="{{data}}" auto></iron-ajax>
+
+      <div class="flex horizontal layout">
+        <div class="flex vertical layout">
+          <!-- Main List for the items -->
+          <iron-list id="itemsList" items="[[data]]" selected-items="{{selectedItems}}" selection-enabled multi-selection>
+            
+            
+            
+            
+            
+            
+            
+            <template>
+          <div>
+            <div class="item">
+              <div class="primary dim">[[item.index]]</div>
+              <div class="pad">
+                <div class="primary"><span>[[item.fname]]</span> <span>[[item.lname]]</span></div>
+                <div class="secondary"><span>[[item.address]]</span> <span>[[item.city]]</span></div>
+                <div class="secondary"><span>[[item.city]]</span>, <span>[[item.state]]</span>  <span>[[item.zip]]</span></div>
+                <div class="secondary dim">[[item.business]]</div>
+                 <article-content rid=[[item.index]]></article-content>
+              </div>
+              <iron-icon icon$="[[iconForItem(item)]]"></iron-icon>
+            </div>
+          </div>
+        </template>
+          </iron-list>
+        </div>
+        <div id="starredView" class="vertical layout" hidden$="[[!showSelection]]">
+          <!-- List for the selected items -->
+          <iron-list id="selectedItemsList" items="[[selectedItems]]" hidden$="[[!selectedItems.length]]">
+            <template>
+              <paper-item on-tap="_unselect">[[item.name]]</paper-item>
+            </template>
+          </iron-list>
+        </div>
+      </div>
+    </template>
+  </dom-module>
+
+ <script>
+
+    HTMLImports.whenReady(function() {
+
+      Polymer({
+
+        is: 'article-list',
+
+        properties: {
+          selectedItems: {
+            type: Object
+          },
+
+          showSelection: {
+            type: Boolean,
+            value: true,
+            observer: '_showSelectionChanged'
+          }
+        },
+
+        getContent : function(id){
+        	
+        },
+        
+        iconForItem: function(isSelected) {
+          return isSelected ? 'star' : 'star-border';
+        },
+
+        _computedClass: function(isSelected) {
+          var classes = 'item';
+          if (isSelected) {
+            classes += ' selected';
+          }
+          return classes;
+        },
+
+        _unselect: function(e) {
+          this.$.itemsList.deselectItem(e.model.item);
+	          this.$.selectedItemsList.fire('resize');
+        },
+
+        _toggleStarredView: function() {
+          this.showSelection = !this.showSelection;
+        },
+
+        _showSelectionChanged: function() {
+          this.$.selectedItemsList.fire('resize');
+        },	
+        ready : function(e) {
+        	this.addEventListener('selectThumb', function(){
+				console.log("scroll");
+				document.querySelector('iron-list').scrollToIndex(5);
+			});
+			this.addEventListener('articleLoaded', function(){
+				console.log("resize");
+				document.querySelector('iron-list')._boundNotifyResize();
+				
+				
+			});
+		}
+      });
+
+   });
+
+  </script>

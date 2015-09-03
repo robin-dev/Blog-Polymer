@@ -14,7 +14,7 @@ app.get("/", function (req, res) {
 var options = {
 		maxAge :10
 		};
-app.use(express.static(__dirname + '/www'));
+app.use(express.static(__dirname + '/app'));
 var bodyParser = require('body-parser');
 
 app.use(bodyParser.json()); // for parsing application/json
@@ -23,6 +23,10 @@ app.post('/', function (req, res) {
 	  console.log(req.body);
 	  res.json(req.body);
 	})
+	
+	app.get("/test/*", function (req, res) {
+	  res.redirect("/article/6");
+	});
 
 app.post("/writeFile", function(req, res) {
 	console.log("writeFile");
@@ -35,8 +39,6 @@ app.post("/writeFile", function(req, res) {
 
 	    console.log("The file was saved!");
 	});
-	
-	
 })
 app.get("/article/*", function (req, res) {
 console.log("ici");
@@ -51,6 +53,19 @@ console.log("ici");
 			}
 		});
 });
+app.get("/menu/*", function (req, res) {
+	console.log("ici");
+		  
+			getMenu(req.url,function(article,error){
+				if(error){
+					res.writeHead(404, "Article not found", {'Content-Type': 'text/plain'});
+					res.end();
+				}else{
+					//res.writeHead(200, "OK", {'Content-Type': 'text/plain'});
+					res.send(article);
+				}
+			});
+	});
 
 /*app.get("/aaa", function(req, res) {
 	console.log("demande");
@@ -110,6 +125,81 @@ function getArticleContent(articleURL,callback){
 	});
 }
 
+function getMenu(articleURL,callback){
+	console.log("url : "+articleURL);
+	
+	//Permet de récupérer le niveau 1 du menu
+	var done  = false;
+		if(typeof(articleURL.split("/")[2])!== 'undefined'){
+			var articleId = getNumber(articleURL.split("/")[2]);
+			console.log("id : "+articleId);
+			pg.defaults.poolSize = 10000;
+			pg.connect(conString, function(err, client, done) {
+			  if (err) {
+				return console.error('error fetching client from pool', err);
+			  }
+			  
+			  
+			  var query = client.query("SELECT Article.id, Article.title,Article.description,Article.image_id FROM Articlelink,Article WHERE Articlelink.parent_id=$1 AND Articlelink.article_id =Article.id" ,[ articleId], function(err, result) {
+					if(err) {
+					  return console.error('error running query', err);
+					}
+					console.log("result : "+result.rows);
+					if(typeof(result.rows) !== 'undefined'){
+						var parents = result.rows;
+						fillChildrenMenu(parents, callback);
+					}
+				  });
+			});
+	}	
+	
+	
+}
+
+
+function fillChildrenMenu(parents, callback){
+	//Permet de récupérer le niveau 2 du menu
+			pg.defaults.poolSize = 10000;
+			pg.connect(conString, function(err, client, done) {
+			  if (err) {
+				return console.error('error fetching client from pool', err);
+			  }
+			  var tab = [];
+			  for(var i=0;i<parents.length;i++){
+				  tab.push(parents[i].id);
+			  }
+			  console.log("avant les enfants" );
+			  var query = client.query("SELECT Articlelink.parent_id,Article.id, Article.title,Article.description,Article.image_id FROM Articlelink,Article WHERE Articlelink.parent_id= ANY($1::int[]) AND Articlelink.article_id =Article.id" ,[ tab], function(err, result) {
+					if(err) {
+					  return console.error('error running query', err);
+					}
+					if(typeof(result.rows) !== 'undefined'){
+						var children = result.rows;
+						for(var j=0;j<parents.length;j++){
+							if(typeof(parents[j].children) === 'undefined'){
+								parents[j].children= [];
+							}
+							for(var k=0;k<children.length;k++){
+								
+								console.log("j: " + j);
+								console.log("k: " + k);
+								
+								console.log("children : " + children[k].parent_id);
+								console.log("parent : " + parents[j].id);
+								if(children[k].parent_id === parents[j].id){
+									parents[j].children.push(children[k]);
+									console.log("ajouté");
+								}
+							}
+						}
+						
+					}
+					callback( parents,false);
+					client.end();
+				  });
+			});
+	
+}
 
 function saveArticleContent(articleURL,articleContent,callback){
 	console.log("url : "+articleURL);
@@ -160,6 +250,25 @@ function saveArticleContent(articleURL,articleContent,callback){
 	  
 	  
 	  
+	  	  
+	  	  
+	  	  
+	  	  
+	  	  
+	  	  
+	  	  
+	  	  
+	  	  
+	  	  
+	  	  
+	  	  
+	  	  
+	  	  
+	  	  
+	  	  
+	  	  
+	  	  
+	  	  
 	  
 	  
 	  
