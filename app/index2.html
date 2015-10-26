@@ -54,106 +54,102 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 </head>
 
 <body unresolved class="fullbleed layout vertical">
-  <span id="browser-sync-binding"></span>
-  <template is="dom-bind" id="app">
 
-    <paper-drawer-panel id="paperDrawerPanel">
-      <!-- Drawer Scroll Header Panel -->
-      <paper-scroll-header-panel drawer fixed>
-
-        <!-- Drawer Toolbar -->
-        <paper-toolbar id="drawerToolbar">
-          <span class="paper-font-title">Menu</span>
-        </paper-toolbar>
-		
-        <!-- Drawer Content -->
-        <paper-menu class="list" attr-for-selected="data-route" selected="{{route}}" on-iron-select="onMenuSelect">
-          <a data-route="home" href="/">
-            <iron-icon icon="home"></iron-icon>
-            <span>Home</span>
-          </a>
+		    <paper-card class="widgetContainer" >
+		    <div class="mapWidgetContainerContent">
+		    <google-map></google-map>
+		    </div>
+			</paper-card>
+           
+<paper-card class="widgetContainer" ><div class="widgetContainerContent">
+        <paper-menu class="widgetMenu">
+          <paper-submenu>
           
+            <paper-item class="menu-trigger menuheader"> <img src="images/test/02.png"> SituAction <div class="menuRightIconContainer"><img  class="menuRightIcon" src="images/test/03.png"></div></paper-item>
+            <paper-menu class="menu-content sublist">
+               <paper-icon-item>
+		         <img src="images/test/01.png">
+		          <paper-item-body two-line>
+		            <div>GV - BD 581 CJ (id : Gaël Vlerick)</div>
+		            <div secondary>Arrêt le 27/08/2015 à 15h09 - 127, rue Pasteur 59139 Wattignies</div>
+		          </paper-item-body>
+		        </paper-icon-item>
+              <paper-icon-item>
+		          <img src="images/test/01.png">
+		          <paper-item-body two-line>
+		            <div></img>FD - AP 172 AE</div>
+		            <div secondary>Arrêt le 27/08/2015 à 17h22 - 127, rue Pasteur 59139 Wattignies</div>
+		          </paper-item-body>
+		        </paper-icon-item>
+              <paper-icon-item>
+		          <img src="images/test/04.png">
+		          <paper-item-body two-line>
+		            <div>STS - DC 177 QZ (id : Stephan Soard)</div>
+		            <div secondary>Se déplace à 19h36 - 8, allée des champs Elysées 75000 Paris</div>
+		          </paper-item-body>
+		        </paper-icon-item>
+            </paper-menu>
+          </paper-submenu>
+          <paper-menu class="widgetMenu">
+          <paper-submenu>
           
-
-          <a data-route="users" href="/users">
-            <iron-icon icon="info"></iron-icon>
-            <span>Users</span>
-          </a>
-	     <a data-route="other" href="/top/vf/vfd">
-            <iron-icon icon="info"></iron-icon>
-            <span>top1</span>
-          </a>
- 		<a data-route="other" href="/top/ggg/vlllfd">
-            <iron-icon icon="info"></iron-icon>
-            <span>top1</span>
-          </a>
-          <a data-route="other" href="/top/ggg">
-            <iron-icon icon="info"></iron-icon>
-            <span>top1</span>
-          </a>
-          <a data-route="contact" href="/contact">
-            <iron-icon icon="mail"></iron-icon>
-            <span>Contact</span>
-          </a>
+            <paper-item class="menu-trigger menuheader"> <img src="images/test/02.png"> Chantier <div class="menuRightIconContainer"><img  class="menuRightIcon" src="images/test/03.png"></div></paper-item>
+            <paper-menu class="menu-content sublist">
+               <paper-icon-item>
+		         <img src="images/test/01.png">
+		          <paper-item-body two-line>
+		            <div>GV - BD 581 CJ (id : Gaël Vlerick)</div>
+		            <div secondary>Arrêt le 27/08/2015 à 15h09 - 127, rue Pasteur 59139 Wattignies</div>
+		          </paper-item-body>
+		        </paper-icon-item>
+              <paper-icon-item>
+		          <img src="images/test/01.png">
+		          <paper-item-body two-line>
+		            <div></img>GV - BD 581 CJ (id : Gaël Vlerick)</div>
+		            <div secondary>Arrêt le 27/08/2015 à 15h09 - 127, rue Pasteur 59139 Wattignies</div>
+		          </paper-item-body>
+		        </paper-icon-item>
+              <paper-icon-item>
+		          <img src="images/test/01.png">
+		          <paper-item-body two-line>
+		            <div>GV - BD 581 CJ (id : Gaël Vlerick)</div>
+		            <div secondary>Arrêt le 27/08/2015 à 15h09 - 127, rue Pasteur 59139 Wattignies</div>
+		          </paper-item-body>
+		        </paper-icon-item>
+            </paper-menu>
+          </paper-submenu>
+          <paper-menu class="widgetMenu">
+          <paper-submenu>
+          
+            <paper-item class="menu-trigger menuheader"> <img src="images/test/02.png"> Service <div class="menuRightIconContainer"><img  class="menuRightIcon" src="images/test/03.png"></div></paper-item>
+            <paper-menu class="menu-content sublist">
+               <paper-icon-item>
+		         <img src="images/test/01.png">
+		          <paper-item-body two-line>
+		            <div>GV - BD 581 CJ (id : Gaël Vlerick)</div>
+		            <div secondary>Arrêt le 27/08/2015 à 15h09 - 127, rue Pasteur 59139 Wattignies</div>
+		          </paper-item-body>
+		        </paper-icon-item>
+              <paper-icon-item>
+		          <img src="images/test/01.png">
+		          <paper-item-body two-line>
+		            <div></img>GV - BD 581 CJ (id : Gaël Vlerick)</div>
+		            <div secondary>Arrêt le 27/08/2015 à 15h09 - 127, rue Pasteur 59139 Wattignies</div>
+		          </paper-item-body>
+		        </paper-icon-item>
+              <paper-icon-item>
+		          <img src="images/test/01.png">
+		          <paper-item-body two-line>
+		            <div>GV - BD 581 CJ (id : Gaël Vlerick)</div>
+		            <div secondary>Arrêt le 27/08/2015 à 15h09 - 127, rue Pasteur 59139 Wattignies</div>
+		          </paper-item-body>
+		        </paper-icon-item>
+            </paper-menu>
+          </paper-submenu>
         </paper-menu>
-      </paper-scroll-header-panel>
-
-      <!-- Main Area -->
-      <paper-scroll-header-panel main condenses keep-condensed-header>
-
-        <!-- Main Toolbar -->
-        <paper-toolbar id="mainToolbar" class="tall paperToolBarImage">
-          
-          
-          <paper-icon-button id="paperToggle" icon="menu" paper-drawer-toggle></paper-icon-button>
-          <span class="flex"></span>
-
-          <!-- Toolbar icons -->
-          <paper-icon-button icon="refresh"></paper-icon-button>
-          <paper-icon-button icon="search"></paper-icon-button>
-
-          <!-- Application name -->
-          <div class="middle middle-container center horizontal layout">
-            <div class="app-name">Polymer Starter Kit</div>
-          </div>
-
-          <!-- Application sub title -->
-          <div class="bottom bottom-container center horizontal layout">
-            <div class="bottom-title paper-font-subhead">The future of the web today</div>
-          </div>
-
-        </paper-toolbar>
-
-        <!-- Main Content -->
-        <div class="content">
-          
-		<article-list></article-list>
-        </div>
-      </paper-scroll-header-panel>
-    </paper-drawer-panel>
-
-    <!-- Uncomment next block to enable Service Worker support (1/2) -->
-    <!--
-    <paper-toast id="caching-complete"
-                 duration="6000"
-                 text="Caching complete! This app will work offline.">
-    </paper-toast>
-
-    <platinum-sw-register auto-register
-                          clients-claim
-                          skip-waiting
-                          on-service-worker-installed="displayInstalledToast">
-      <platinum-sw-cache default-cache-strategy="networkFirst"
-                         precache-file="precache.json">
-      </platinum-sw-cache>
-    </platinum-sw-register>
-    -->
-
-  </template>
-
-  <!-- build:js scripts/app.js -->
-  <script src="scripts/app.js"></script>
-  <!-- endbuild-->
+      </div>
+      
+</paper-card>
 </body>
 
 </html>
