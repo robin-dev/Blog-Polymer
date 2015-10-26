@@ -1,0 +1,29 @@
+{
+	"articles" : [
+		{
+			 "id" : 0,
+		     "name" : "Acceuil",
+		     "link" : "acceuil.json"
+		},
+		{
+			 "id" : 1,
+		     "name" : "Pays",
+		     "link" : "pays.json"
+		},
+		{
+			 "id" : 2,
+		     "name" : "France",
+		     "link" : "france.json"
+		},
+		{
+			 "id" : 3,
+		     "name" : "Lille",
+		     "link" : "acceuil.json"
+		},
+		{
+			 "id" : 4,
+		     "name" : "Paris",
+		     "link" : "paris.json"
+		}
+	]
+}

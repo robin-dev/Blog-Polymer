@@ -1,0 +1,27 @@
+{
+  "name": "blog-polymer",
+  "version": "0.0.1",
+  "authors": [
+    "robin-dev <robin.pochet@gmail.com>"
+  ],
+  "dependencies": {
+	    "iron-elements": "PolymerElements/iron-elements",
+	    "paper-elements": "PolymerElements/paper-elements",
+	    "platinum-elements": "PolymerElements/platinum-elements",
+	    "neon-elements": "PolymerElements/neon-elements",
+	    "page": "visionmedia/page.js"
+  },
+  "description": "Travel blog in Polymer",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+ <meta  charset="UTF-8">
+<head>
+</head>
+
+<dom-module id="left-menu">
+
+
+  <style>
+  </style>
+  <template>
+	  <iron-ajax
+	      id="ajaxHierarchy"
+	      url=""
+	      handle-as="json"
+	      on-response="hresponse"
+	      debounce-duration="300">
+	  </iron-ajax>
+	   <iron-ajax
+	      id="ajaxMeta"
+	      url=""
+	      handle-as="json"
+	      on-response="mresponse"
+	      debounce-duration="300">
+	  </iron-ajax>
+	  
+  <iron-signals on-iron-signal-urlchange="urlChange"></iron-signals>
+  
+  
+  	<a data-route="home" href="{{retour.link}}" >
+			 <paper-item>
+	            <iron-icon icon="home"></iron-icon>
+	            <span>{{retour.name}}</span>
+			 </paper-item>
+		</a>
+	 <paper-menu class="list" attr-for-selected="data-route" selected="[[route]]">
+	 <template is="dom-repeat" items="{{menu}}" as="menuelem">
+	 	<a data-route="home" href="{{menuelem.link}}" >
+			 <paper-item>
+	            <iron-icon icon="home"></iron-icon>
+	            <span>{{menuelem.name}}</span>
+			 </paper-item>
+		</a>
+	 </template>
+	 	
+		
+        
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+	  
+    is: "left-menu",
+    properties: {
+    	fullMenu : {
+    		type : Object,
+    	},
+    	fullMeta: {
+    		type : Object,
+    	},
+  		url : {
+  			type : Object
+  		},
+    	categories : {
+    		type : Object
+    	},
+    	menu : {
+    		type : Array,
+    		value : [{"name" : "topt","link" :"ta"}],
+    		notify : true
+    	},
+    	retour : {
+    		type : Object
+    	}
+    },
+	ready : function ready(){
+		  console.log("ready");
+		  this.setajaxMeta();
+		  this.setajaxHierarchy();
+	},
+	setajaxHierarchy: function () {
+		  this.$.ajaxHierarchy.url = "/menu/hierarchy";
+	      this.$.ajaxHierarchy.generateRequest();
+     },
+     setajaxMeta: function () {
+		  this.$.ajaxMeta.url = "/menu/names";
+	      this.$.ajaxMeta.generateRequest();
+    },
+   hresponse: function(request) {
+     this.fullMenu = JSON.parse(request.detail.response);
+     this.getMenu();
+   }, 
+   mresponse: function(request) {
+     this.fullMeta = JSON.parse(request.detail.response);
+     this.getMenu();
+   },
+   urlChange: function(request) {
+	    this.url = request.detail.url;
+	    this.getMenu();
+	},
+   
+   getMenu : function(){
+	   //Si toutes les données sont là
+	 
+	  if(typeof(this.fullMenu)!= "undefined" &&  typeof(this.fullMeta)!= "undefined" && typeof(this.url)!= "undefined"){
+		  var oldMenu = this.menu;
+		  var categories = [];
+		  var i=1;
+		  while(typeof(this.url["cat"+i])!== "undefined"){
+			  categories.push(this.url["cat"+i]);
+			  i++;
+		  }
+		  this.categories = categories;
+		  var article = this.url.article;
+		  var link = "/";
+		  for(var i=0;i<categories.length;i++){
+			  link+=categories[i]  + "/";
+		  }
+		  var retourLink = link;
+		  if(article !=""){
+			  link+= article+ "/";
+		  }
+		  
+		  
+		  var currentMenu = this.fullMenu;
+		  if(categories.length !== 0){
+			  var lastCategory = categories[categories.length -1];
+			  var lastDetail;
+			  for(var j=0;j<this.fullMeta.articles.length;j++){
+				  if(this.fullMeta.articles[j].name === lastCategory){
+					  lastDetail = this.fullMeta.articles[j];
+				  }
+			  }
+			  if(typeof(lastDetail) !== 'undefined') {
+				  this.retour = {name : lastDetail.name,link : retourLink }
+			  }
+		  }
+		  else{
+			  this.retour = {name : "Acceuil",link : "/"};
+		  }
+		  for(var i=0;i<categories.length;i++){
+			  var currentCat = categories[i];
+			  var currentId;
+			  for(var j=0;j<this.fullMeta.articles.length;j++){
+				  if(this.fullMeta.articles[j].name === currentCat){
+					  currentId = this.fullMeta.articles[j].id;
+				  }
+			  }
+			  if(typeof(currentId) !== 'undefined') {
+				  for(var k=0;k<currentMenu.children.length;k++){
+					  if(currentMenu.children[k].id === currentId){
+						  currentMenu = currentMenu.children[k];
+					  }
+				  }  
+			  }
+		  }
+		  var currentCat = article;
+		  var currentId;
+		  for(var j=0;j<this.fullMeta.articles.length;j++){
+			  if(this.fullMeta.articles[j].name === currentCat){
+				  currentId = this.fullMeta.articles[j].id;
+			  }
+		  }
+		  if(typeof(currentId) !== 'undefined') {
+			  for(var k=0;k<currentMenu.children.length;k++){
+				  if(currentMenu.children[k].id === currentId){
+					  currentMenu = currentMenu.children[k];
+				  }
+			  }  
+		  }
+		  
+		  this.menu = [];
+		 
+		 
+		 for(var i=0;i<currentMenu.children.length;i++){
+			 for(var j=0;j<this.fullMeta.articles.length;j++){
+				  if(this.fullMeta.articles[j].id === currentMenu.children[i].id){
+					  this.push('menu', {"name" : this.fullMeta.articles[j].name,"link" : link+ this.fullMeta.articles[j].name, "selected" : this.fullMeta.articles[j].name === article});
+				  }
+			  }
+			
+		 }
+		 
+		  console.log(this.fullMenu);
+		  console.log(this.fullMeta);
+		  console.log(this.url);
+	  }
+   }
+  });
+</script>
